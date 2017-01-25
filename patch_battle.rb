@@ -48,39 +48,6 @@ class Main
     ids.sort!
   end
 
-  def get_lobby_sym_from(input)
-    case input
-    when /n|normal|nora/
-      :standard
-    when '2'
-      :squad_2
-    when '3'
-      :squad_3
-    when '4'
-      :squad_4
-    when /p|private/
-      :private
-    when /f|fes|fest/
-      :fest
-    else
-      nil
-    end
-  end
-
-  def set_lobby(battle_id, lobby_sym)
-    params = {
-      apikey: API_KEY,
-      id: battle_id,
-      lobby: lobby_sym,
-    }
-
-    path = '/api/v1/battle'
-    params = self.params_to_s(params)
-    puts "PATCH #{path} #{params}"
-    response = @http.patch path, params
-    puts response.message
-  end
-
   def set_link_url(battle_id, link_url)
     params = {
       apikey: API_KEY,
@@ -118,13 +85,6 @@ loop do
 
   break if included_to_id
 end
-
-#input = main.get_input 'lobby(n,2-4,p,f)> '
-#lobby_sym = main.get_lobby_sym_from input
-#return if lobby_sym.nil?
-#ids.each do |id|
-#  main.set_lobby id, lobby_sym
-#end
 
 link_url = main.get_input 'link_url> '
 ids.each do |id|
