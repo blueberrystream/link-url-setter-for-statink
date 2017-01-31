@@ -30,23 +30,23 @@ module Statink
       ids = []
       params = {
         screen_name: screen_name,
-        newer_than: from_id.to_i - 1,
+        older_than: to_id.to_i + 1,
         count: 100,
       }
       loop do
-        params[:newer_than] = ids.last unless ids.empty?
+        params[:older_than] = ids.last unless ids.empty?
         battles = api.get_battles(params)
         fragment = extract_ids_from battles
-        included_to_id = fragment.include?(to_id)
+        included_from_id = fragment.include?(from_id)
 
-        if included_to_id
-          to_id_index = fragment.index to_id
-          fragment.slice! Range.new(to_id_index + 1, fragment.length, true)
+        if included_from_id
+          from_id_index = fragment.index from_id
+          fragment.slice! Range.new(from_id_index + 1, fragment.length, true)
         end
 
         ids.concat fragment
 
-        break if included_to_id
+        break if included_from_id
       end
 
       params = {
@@ -74,7 +74,7 @@ module Statink
         ids.push battle['id']
       end
 
-      ids.sort!
+      ids.sort!.reverse!
     end
 
     def get_id_from(string)
